@@ -1,9 +1,7 @@
 
 // Get Post -> GET /api/posts
 const getPost = async (req,res) => {
-    res.status(200).json({
-        message: 'Get Post'
-    })
+    res.send('<h1>Moin</h1>')
 }
 // Set Post -> POST /api/posts
 const setPost = async (req,res) => {
@@ -33,4 +31,4 @@ module.exports = {
     setPost,
     updatePost,
     deletePost
-} 
+}  
