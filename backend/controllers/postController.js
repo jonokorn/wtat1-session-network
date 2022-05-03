@@ -1,20 +1,25 @@
 const asyncHandler = require('express-async-handler')
+const Post         = require('../models/postModel')
+
 
 // Get Post -> GET /api/posts
 const getPost = asyncHandler(async(req,res) => {
-    res.status(200).json({
-        message: 'Get Post'
-    })
+    const posts = await Post.find()
+    res.status(200).json(posts)
 })
+
 // Set Post -> POST /api/posts
 const setPost = asyncHandler(async(req,res) => {
     if(!req.body.text) {
         res.status(400)
         throw new Error('Please add text')
     }
-    res.status(200).json({
-        message: `Set Post`
+
+    const post = await Post.create({
+        text: req.body.text
     })
+
+    res.status(200).json(post)
 })
 
 const updatePost = asyncHandler((req,res) => {
