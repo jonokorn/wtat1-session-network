@@ -9,8 +9,12 @@ const app               = express()
 
 app.listen(port, () => console.log(`Server started on port ${port}`))
 
-app.set("view engine", "ejs")
+//Setup EJS & CSS
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+app.use(express.static(__dirname + '/public'));
 
+//Usages
 app.use(express.json())
 app.use(express.urlencoded({extended:false}))
 app.use(errorHandler)
@@ -18,7 +22,18 @@ app.use(errorHandler)
 //Routes
 app.use('/posts', require('./routes/postRoutes'))
 app.use('/users', require('./routes/userRoutes'))
-app.use('/', require('./routes/indexRoutes'))
+
+app.get('/', (req,res) => {
+    res.render('index.ejs')
+})
+
+app.get('/login', (req,res) => {
+    res.render('login.ejs')
+})
+
+app.get('/register', (req,res) => {
+    res.render('register.ejs')
+})
 
 
 connectToDatabase()
