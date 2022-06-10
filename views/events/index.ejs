@@ -1,0 +1,36 @@
+<h2>Events Table</h2>
+<table>
+    <thead>
+        <tr>
+            <th class="text-red-400">Name</th>
+            <th>Location</th>
+            <th>Location-Name</th>
+            <th>Price</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% events.forEach(event => { %>
+            <tr>
+                <td><a href="<%= `/events/${event._id}` %>">
+                    <%= event.name %>
+                </a></td>
+                
+                <td><%= event.location %></td>
+                <td><%= event.location_name %></td>
+                <td><%= event.price %></td>
+                <td><%= event.date %></td>
+                <td>
+                    <a href=<%=`/events/${event._id}/edit` %>  >
+                        Edit
+                    </a>
+                </td>
+                <td>
+                    <a href="<%= `events/${event._id}/delete?_method=DELETE` %>">
+                    Delete
+                    </a>
+                </td> 
+            </tr>
+        <% }); %>
+    </tbody>
+</table>

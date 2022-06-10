@@ -1,0 +1,36 @@
+<h2>Users Table</h2>
+<table>
+    <thead>
+        <tr>
+            <th class="text-red-400">Name</th>
+            <th>Email</th>
+            <th>Zip-Code</th>
+            <th>Characters of Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% users.forEach(user => { %>
+            <tr>
+                <td>
+                    <a href="<%= `/users/${user._id}` %>">
+                    <%= user.fullName %>
+                    </a>
+                </td>
+              
+                    <td><%= user.email %></td>
+                    <td><%= user.zipCode %></td>
+                    <td><%= user.characters %></td>
+                    <td>
+                        <a href="<%= `/users/${user._id}/update?_method=PUT` %>">
+                        Edit
+                        </a>
+                    </td>    
+                    <td>
+                        <a href="<%= `users/${user._id}/delete?_method=DELETE` %>">
+                        Delete
+                        </a>
+                    </td>    
+            </tr>
+        <% }); %>
+    </tbody>
+</table>

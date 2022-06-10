@@ -1,0 +1,14 @@
+<h4>Edit Event here: </h4>
+<form action="<%=`/events/${event._id}/update?_method=PUT`%>" method="POST">
+    <label for="name" >Name</label>
+    <input type="text" name="name" value="<%=event.name %>" required>
+    <label for="location" >Location</label>
+    <input type="text" name="location" value="<%=event.location %>" required>
+    <label for="location_name" >Location-Name</label>
+    <input type="text" name="location_name" value="<%=event.location_name %>" required>
+    <label for="price" >Price</label>
+    <input type="number" name="price" value="<%=event.price %>" required>
+    <label for="date" >Date</label>
+    <input type="date" name="date" value="<%=event.date %>" required>
+    <input type="submit" name="submit">
+</form>
