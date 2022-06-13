@@ -4,11 +4,13 @@ userSchema = new Schema({
     name: {
         first: {
             type: String,
-            trim: true
+            trim: true,
+            required: true
         },
         last: {
             type: String, 
-            trim: true
+            trim: true,
+            required: true
         }
     },
     email: {
@@ -16,6 +18,7 @@ userSchema = new Schema({
         required: true, 
         lowercase: true, 
         unique: true
+
     },
     zipCode: {
         type: Number,
@@ -33,12 +36,16 @@ userSchema = new Schema({
 });
 
 userSchema.virtual("fullName").get(
-    function () {return `${this.name.first} ${this.name.last}`} 
+    function () {
+        if(this.name.first !== undefined && this.name.last !== undefined){return `${this.name.first} ${this.name.last}`}
+        
+        else { return 'no name'}  }
 )
 
 userSchema.virtual("characters").get(
     function () {
-        return (this.name.first.length + this.name.last.length)
+        if(this.name.first !== undefined && this.name.last !== undefined){return (this.name.first.length + this.name.last.length )}
+        else { return 0}
     });
 
 module.exports = mongoose.model("User", userSchema);
