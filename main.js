@@ -11,6 +11,9 @@ const express = require("express"),
     usersController = require("./controllers/usersController"),
     mongoose = require("mongoose"), 
     methodOverride = require("method-override"),  
+    cookieParser = require("cookie-parser"),
+    connectFlash = require("connect-flash"),
+    expressSession = require("express-session"),
     app = express();
 
 
@@ -32,6 +35,23 @@ db.once("open", () => {
 app.use(methodOverride("_method", {
     methods: ["POST", "GET"]
    }));
+
+
+app.use(cookieParser("secret_passcode"));
+app.use(expressSession({
+    secret: "secret_passode",
+    cookie: {
+        maxAge: 4000000
+    },
+    resave: false,
+    saveUninitalized: false
+}));
+app.use(connectFlash());  
+
+app.use((req, res, next) => {
+    res.locals.flashMessages = req.flash();
+    next();
+   });
 
 app.use(layouts);
 app.use(express.urlencoded({extended: false}));

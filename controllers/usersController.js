@@ -30,12 +30,18 @@ module.exports = {
         };
 
         User.create(userParams).then(user => {
+            req.flash("success", `${user.fullName}'s account created successfully!`);
             res.locals.redirect = "/users";
             res.locals.user = user;
             next();
         }).catch(error => {
             console.log(`Error saving user: ${error.message}`);
-            next(error);
+            req.flash(
+                "error",
+                `Failed to create user account because: ➥${error.message}.`
+                );
+            res.locals.redirect = "/users/new";
+            next();
         });
     },
     show: (req, res, next) => {
