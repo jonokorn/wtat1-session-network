@@ -10,6 +10,17 @@
     <div >NAVIGATION</div>
     <%- include("../partials/info.ejs") %>
     <%- body %>
+    <% if (flashMessages) { %>
+        <% if (flashMessages.success) { %>
+            <div  >
+                <%= flashMessages.success %>
+            </div>
+            <% } else if (flashMessages.error) { %>
+                <div >
+                    <%= flashMessages.error %>
+                </div>
+                <% } %>
+                    <% } %>
     <div >FOOTER</div>
 </body>
 </html>

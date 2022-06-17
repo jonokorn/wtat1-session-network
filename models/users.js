@@ -1,4 +1,5 @@
 const mongoose = require("mongoose"),
+bcrypt = require('bcrypt'),
 { Schema } = mongoose,
 userSchema = new Schema({
     name: {
@@ -47,5 +48,24 @@ userSchema.virtual("characters").get(
         if(this.name.first !== undefined && this.name.last !== undefined){return (this.name.first.length + this.name.last.length )}
         else { return 0}
     });
+
+
+    userSchema.pre("save", function(next) {
+        let user = this; 
+      
+        bcrypt.hash(user.password, 10).then(hash => {
+          user.password = hash; 
+          next(); 
+        })
+        .catch(error => {
+          console.log(`Error in hasing password: ${error.message}`);
+          next(error);
+        });
+      });
+      
+      userSchema.methods.passwordComparison = function(inputPassword) {
+        let user = this; 
+        return bcrypt.compare(inputPassword, user.password);
+      };    
 
 module.exports = mongoose.model("User", userSchema);
