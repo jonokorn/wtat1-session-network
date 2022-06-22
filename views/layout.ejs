@@ -7,20 +7,47 @@
     <title>Document</title>
 </head>
 <body>
-    <div >NAVIGATION</div>
-    <%- include("../partials/info.ejs") %>
+    <div style="display:flex; flex-direction: row; justify-content: space-between; border: 1px solid black; margin-bottom:12px; padding: 6px; color:white; background-color: darkcyan;">
+        <div>
+            <% if (loggedIn) { %>
+            Logged in as <a href="<%=`/users/${currentUser._id}`%>">
+           ➥ <%= currentUser.fullName %></a>
+           <%} else {%>
+            <a href="/users/login">Log In</a>
+           <% } %>
+        </div>
+        <div>
+            <a style="color:darkgray; margin-right: 3px;" href="/">HOME</a>
+            <a style="color:darkgray; margin-right: 3px;"  href="/users">USERS</a>
+            <a style="color:darkgray; margin-right: 3px;"  href="/users/new">REGISTER</a>
+            <a style="color:darkgray; margin-right: 3px;"  href="/events">EVENTS</a>
+        </div>
+        
+        <div>
+            <% if (loggedIn) { %>
+            <a
+                href="/users/logout">Log out
+            </a>
+            <% } %>
+        </div>
+    </div>
+    
     <%- body %>
-    <% if (flashMessages) { %>
-        <% if (flashMessages.success) { %>
-            <div  >
-                <%= flashMessages.success %>
-            </div>
-            <% } else if (flashMessages.error) { %>
-                <div >
-                    <%= flashMessages.error %>
+    <%- include("../partials/info.ejs") %>
+    <div style="border: 1px solid black; margin-top:12px;  padding: 6px; color: white; background-color: darkcyan;">
+        <% if (flashMessages) { %>
+            <% if (flashMessages.success) { %>
+                <div  style="text-align: center; color:greenyellow">
+                    <%= flashMessages.success %>
                 </div>
-                <% } %>
+                <% } else if (flashMessages.error) { %>
+                    <div style="text-align: center; color:red;" >
+                        <%= flashMessages.error %>
+                    </div>
                     <% } %>
-    <div >FOOTER</div>
+                        <% } %>
+        <p style="text-align: center; color:white; ">Music-Network</p>
+    </div >
+
 </body>
 </html>

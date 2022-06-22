@@ -1,5 +1,7 @@
 "use-strict"
 const User = require("../models/users");
+const passport = require("passport");
+
 
 module.exports = {
     index: (req, res, next) =>{
@@ -30,16 +32,16 @@ module.exports = {
                 last: req.body.last
             },
             email: req.body.email,
-            password: req.body.password,
             zipCode: req.body.zipCode
         };
-
-        User.create(userParams).then(user => {
+        let newUser = new User(userParams);
+        User.register(newUser, req.body.password).then(user => {
+            if(user){
             req.flash("success", `${user.fullName}'s account created successfully!`);
             res.locals.redirect = "/users";
-            res.locals.user = user;
+            //res.locals.user = user;
             next();
-        }).catch(error => {
+        }}).catch(error => {
             console.log(`Error saving user: ${error.message}`);
             req.flash(
                 "error",
@@ -116,33 +118,13 @@ module.exports = {
        });
     },
 
-    authenticate: (req, res, next) => {
-        User.findOne({ email: req.body.email })
-          .then(user => {
-            if (user) {
-              user.passwordComparison(req.body.password)
-                .then(passwordsMatch => {
-                  if (passwordsMatch) {
-                    res.locals.redirect = `users/${user._id}`;
-                    req.flash("success", `${user.fullName}'s logged in successfully!`);
-                    res.locals.user = user;
-                  } else {
-                    req.flash("error", "Failed to log in user account: Incorrect Password or E-Mail.");
-                    res.locals.redirect = "/users/login";
-                  }
-                  next();
-                });
-            } else {
-              req.flash("error", "Failed to log in user account: User account not found.");
-              res.locals.redirect = "/users/login";
-              next();
-            }
-          })
-          .catch(error => {
-            console.log(`Error logging in user: ${error.message}`);
-            next(error);
-          });
-      },
+    authenticate: passport.authenticate(
+        "local", {
+            failureRedirect: "/users/login",
+            failureFlash: "Failed to login.",
+            successRedirect: "/",
+            successFlash: "Logged in!"
+        }),
 
       validate: (req, res, next) => {
         req.sanitize("email").normalizeEmail({
@@ -170,6 +152,16 @@ module.exports = {
 
       login: (req, res) => {
         res.render("users/login"); 
+      },
+
+      logout: (req, res, next) => {
+        req.logout(function(err) {
+            if (err) { return next(err); }
+            res.redirect('/');
+            req.flash("success", "You have been logged out!");
+            next();    
+          });
+       
       },
     
 
