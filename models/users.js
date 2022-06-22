@@ -1,5 +1,6 @@
 const mongoose = require("mongoose"),
 bcrypt = require('bcrypt'),
+passportLocalMongoose = require("passport-local-mongoose"),
 { Schema } = mongoose,
 userSchema = new Schema({
     name: {
@@ -26,10 +27,6 @@ userSchema = new Schema({
         min: [1000, "Zip code too short"],
         max: 99999
     },
-    password: {
-        type: String, 
-        required: true
-    },
     events: [{type: Schema.Types.ObjectId, ref: "Event"}],
     subscribedAccound: {type: Schema.Types.ObjectId, ref: "Subscriber"}
 }, {
@@ -49,23 +46,11 @@ userSchema.virtual("characters").get(
         else { return 0}
     });
 
+  
 
-    userSchema.pre("save", function(next) {
-        let user = this; 
-      
-        bcrypt.hash(user.password, 10).then(hash => {
-          user.password = hash; 
-          next(); 
-        })
-        .catch(error => {
-          console.log(`Error in hasing password: ${error.message}`);
-          next(error);
-        });
-      });
-      
-      userSchema.methods.passwordComparison = function(inputPassword) {
-        let user = this; 
-        return bcrypt.compare(inputPassword, user.password);
-      };    
+
+userSchema.plugin(passportLocalMongoose, {
+    usernameField: "email"
+}),
 
 module.exports = mongoose.model("User", userSchema);
