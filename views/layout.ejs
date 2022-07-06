@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/eventsApp.js"></script>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,7 +24,8 @@
             <a style="color:darkgray; margin-right: 3px;"  href="/users/new">REGISTER</a>
             <a style="color:darkgray; margin-right: 3px;"  href="/events">EVENTS</a>
         </div>
-        
+       
+       
         <div>
             <% if (loggedIn) { %>
             <a
@@ -33,7 +36,11 @@
     </div>
     
     <%- body %>
+    
+    <%- include ("../partials/eventsBox.ejs") %>
+   
     <%- include("../partials/info.ejs") %>
+    
     <div style="border: 1px solid black; margin-top:12px;  padding: 6px; color: white; background-color: darkcyan;">
         <% if (flashMessages) { %>
             <% if (flashMessages.success) { %>

@@ -1,4 +1,7 @@
+const { HTTP_VERSION_NOT_SUPPORTED } = require('http-status-codes');
 const Events = require('../models/events');
+const { respondWithName } = require('./homeController');
+const  httpStatus = require("http-status-codes");
 
 
 module.exports = {
@@ -17,6 +20,31 @@ module.exports = {
     indexView: (req, res) => {
          res.render("events/index");
     },
+
+    respondJSON: (req, res) => {
+        res.json(
+                res.locals.events
+            );
+    },
+
+    errorJSON: (error, req, res, next) => {
+        let errorObject;
+        
+        if(error){
+            errorObject = {
+            status: httpStatus.INTERNAL_SERVER_ERROR,
+            message: error.message
+            };
+        }else{
+            errorObject = {
+                status: httpStatus.INTERNAL_SERVER_ERROR,
+                message: "Unknown Error."
+            };
+        }
+
+        res.json(errorObject);
+    },
+
     new: (req, res) => {
         res.render("events/new");
     },
@@ -101,6 +129,44 @@ module.exports = {
        console.log(`Error deleting event by ID: ${error.message}`);
        next();
        });
+    },
+
+    save: (req, res, next)=>{
+        let eventId = req.params.id,
+        courrentUser = req.user;
+
+        if(currentUser){
+            User.findByIdAndUpdate(currentUser, {
+                $addToSet: {
+                    events: eventId
+                }
+            }).then(() =>{
+                res.locals.success = true;
+                next();
+            })
+            .catch(error => {
+                next(error);
+            })
+            
+        }else{
+            next(new Error("User must log in."));
+        }
+    },
+
+    filterUserEvents: (req, res, next) => {
+        let currentUser = res.locals.currentUser;
+        if(currentUser) {
+            let mappedEvents = res.locals.events.map((event) => {
+                let userSaved = currentUser.events.some((userEvent) => {
+                    return userEvent.equals(event_id);
+                });
+                return Object.assign(event.toObject(), {saved: userSaved});
+            });
+            res.locals.events = mappedEvents;
+            next();
+        }else{
+            next();
+        }
     },
 
 

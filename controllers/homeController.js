@@ -2,6 +2,11 @@ const path = require('path');
 const mongoose = require("mongoose");
 const event = require("../models/events")
 
+
+
+
+
+
 const reloadEvents = () => {
     var allEvents = event.find()
     allEvents.exec((error, data) => {
@@ -57,6 +62,11 @@ respondWithName = (req, res) => {
 };
 
 module.exports = {
+
+    indexView: (req, res) => {
+        res.render("./index.ejs");
+    },
+
     getHomePage,
     getContactPage,
     respondWithName,
