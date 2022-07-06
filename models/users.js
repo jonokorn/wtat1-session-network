@@ -2,6 +2,7 @@ const mongoose = require("mongoose"),
 bcrypt = require('bcrypt'),
 passportLocalMongoose = require("passport-local-mongoose"),
 { Schema } = mongoose,
+randToken = require("rand-token"),
 userSchema = new Schema({
     name: {
         first: {
@@ -28,9 +29,22 @@ userSchema = new Schema({
         max: 99999
     },
     events: [{type: Schema.Types.ObjectId, ref: "Event"}],
-    subscribedAccound: {type: Schema.Types.ObjectId, ref: "Subscriber"}
+    subscribedAccound: {type: Schema.Types.ObjectId, ref: "Subscriber"},
+    apiToken: {
+        type:String
+    }
 }, {
     timestamps: true
+});
+
+userSchema.pre("save", function(next) {
+    let user = this;
+    console.log("user ", user);
+    if (!user.apiToken){
+        user.apiToken = randToken.generate(16);
+        console.log("generated token ")
+    }
+    next();
 });
 
 userSchema.virtual("fullName").get(

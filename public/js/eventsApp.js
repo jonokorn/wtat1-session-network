@@ -1,5 +1,8 @@
 
+
+
 $(document).ready(() => {
+let apiToken = $(`#apiToken`).data("token");
 console.log("ready" ,  $("#loadEvents"));
     $(".eventsContainer").remove();
     $("#loadEvents").on("click",() => {
@@ -8,7 +11,8 @@ console.log("ready" ,  $("#loadEvents"));
         $(".events-body").append(
             `<div class="eventsContainer" style="align-items: center;  margin-left: 30px; display: flex; flex-direction: row; gap: 10%;" ></div>`
             )
-            $.get("/api/events", (data) => {
+            $.get(`/api/events?apiToken=${apiToken}`, (data) => {
+                console.log("data", data);
                 data.forEach((event) => {
                     $(".eventsContainer").append(
                         `<div class="events" style="  margin-right: 10px>

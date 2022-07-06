@@ -17,6 +17,10 @@
         <th>Password</th>
         <td><%= user.password %></td>
     </tr>
+    <tr>
+        <th>Token</th>
+        <td><%= user.apiToken %></td>
+    </tr>
 </table>
 
 <% if (user.subscribedAccount) { %>

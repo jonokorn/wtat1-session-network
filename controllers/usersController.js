@@ -1,8 +1,8 @@
 "use-strict"
 const User = require("../models/users");
 const passport = require("passport");
-
-
+const token = process.env.TOKEN || "eventT0k3n";
+const jsonWebToken = require("jsonwebtoken");
 module.exports = {
     index: (req, res, next) =>{
         User.find({}).then(
@@ -118,14 +118,91 @@ module.exports = {
        });
     },
 
-    authenticate: passport.authenticate(
-        "local", {
-            failureRedirect: "/users/login",
-            failureFlash: "Failed to login.",
-            successRedirect: "/",
-            successFlash: "Logged in!"
-        }),
+    verifyToken: (req, res, next) => {
+        console.log("verify", req.query);
+        let token = req.query.apiToken;
+        if (token) {
+        User.findOne({ apiToken: token })
+       .then(user => {
+       if (user) next();
+       else {next(new Error("Invalid API token."));
+       console.log("Error1");}
+       })
+       .catch(error => {
+       next(new Error(error.message));
+       console.log("Error2");
+       });
+        } else {
+        next(new Error("Invalid API token."));
+        console.log("Error3");
+        }
+    },
 
+        authenticate: passport.authenticate(
+            "local", {
+                failureRedirect: "/users/login",
+                failureFlash: "Failed to login.",
+                successRedirect: "/",
+                successFlash: "Logged in!"
+            }),
+
+        apiAuthenticate: (req, res, next) => {
+            console.log("authenticate");
+            passport.authenticate("local", (errors, user) => {
+            if (user) {
+           let signedToken = jsonWebToken.sign(
+            {
+           data: user._id,
+            exp: new Date().setDate(new Date().getDate() + 1)
+           },
+           "secret_encoding_passphrase"
+           );
+           res.json({
+           success: true,
+           token: signedToken
+           });
+            } else
+           res.json({
+           success: false,
+           message: "Could not authenticate user."
+           });
+            })(req, res, next);
+           },
+
+           verifyJWT: (req, res, next) => {
+            let token = req.headers.token;
+            if (token) {
+            jsonWebToken.verify(
+           token,
+           "secret_encoding_passphrase",
+           (errors, payload) => {
+           if (payload) {
+           User.findById(payload.data).then(user => {
+           if (user) {
+           next();
+           } else {
+           res.status(httpStatus.FORBIDDEN).json({
+            error: true,
+            message: "No User account found."
+            });
+            }
+           });
+           } else {
+           res.status(httpStatus.UNAUTHORIZED).json({
+           error: true,
+           message: "Cannot verify API token."
+           });
+           next();
+           }
+           }
+            );
+        } else {
+            res.status(httpStatus.UNAUTHORIZED).json({
+           error: true,
+           message: "Provide Token"
+            });
+            }
+           },
       validate: (req, res, next) => {
         req.sanitize("email").normalizeEmail({
           all_lowercase: true
