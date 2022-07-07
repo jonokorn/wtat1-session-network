@@ -4,8 +4,9 @@ const router = require("express").Router(),
 
     
 router.post("/login", usersController.apiAuthenticate);
-router.use(usersController.verifyJWT)
 router.use(usersController.verifyToken);
+//router.use(usersController.verifyJWT)
+
 router.get("/events", eventsController.index, eventsController.filterUserEvents, eventsController.respondJSON),
 router.use(eventsController.errorJSON);
 router.get("/events/:id/save", eventsController.save, eventsController.respondJSON)

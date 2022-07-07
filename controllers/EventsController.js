@@ -6,7 +6,7 @@ const  httpStatus = require("http-status-codes");
 
 module.exports = {
     index: (req, res, next) => {
-        Events.find()
+        Events.find({})
              .then(events => {
                  res.locals.events = events;
                  next();
