@@ -1,5 +1,24 @@
 
 $(document).ready(() => {
+    const socket = io();
+    $("#chatForm").submit(() => {
+        let text = $("#chat-input").val();
+        socket.emit("message", {
+          content: text
+        });
+        $("#chat-input").val("");
+        return false;
+      });
+
+    socket.on("message", (message) => {
+        displayMessage(message.content);
+    });
+
+    let displayMessage = (message) => {
+        $("#chat").prepend($("<li>").html(message));
+    };
+    
+
 console.log("ready" ,  $("#loadEvents"));
     $(".eventsContainer").remove();
     $("#loadEvents").on("click",() => {
@@ -57,3 +76,5 @@ const addSaveButtonListener =  () =>  {
         })
         console.log("7");
    }
+
+

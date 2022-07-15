@@ -16,7 +16,7 @@ const express = require("express"),
 mongoose.Promise = global.Promise;    
 
 mongoose.connect(
-    "mongodb://localhost:27017/music_network_db",
+    "mongodb+srv://admin:qwer1234@cluster0.je9zl.mongodb.net/?retryWrites=true&w=majority",
     {useNewUrlParser: true}
 );
 const db = mongoose.connection;
@@ -65,9 +65,11 @@ passport.deserializeUser(User.deserializeUser());
 
 app.set("port", process.env.PORT || 3000);
 app.set("view engine", "ejs")
-app.listen(app.get("port"), () => {
-    console.log(`Server running at http://localhost:${ app.get("port") }`);
-});
+
+const server = app.listen(app.get("port"), () => {
+console.log(`Server running at http://localhost:${ app.get("port") }`); }),
+io = require("socket.io")(server);
+require("./controllers/chatController")(io)
 
 app.use(express.static("public"));
 

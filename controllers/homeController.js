@@ -67,6 +67,10 @@ module.exports = {
         res.render("./index.ejs");
     },
 
+    chat: (req, res) => {
+        res.render("chat");
+    },
+    
     getHomePage,
     getContactPage,
     respondWithName,
